@@ -525,7 +525,12 @@ select all rows that have a temperature less than or equal to 10 degrees
 waves_df[waves_df.Temperature <= 10]
 ~~~
 
+Or, we can select all rows that have a buoy_id of 3:
 
+~~~
+waves_df[waves_df.buoy_id == 3]
+~~~
+{: .language-python}
 
 Which produces the following output:
 
@@ -534,13 +539,6 @@ Which produces the following output:
     record_id    buoy_id                Name                Date     Tz    Peak Direction    Tpeak    Wave Height    Temperature    Spread    Operations    Seastate    Quadrant
 3           4	         3    Chesil Waverider    17/04/2023 00:00    5.5             225.0      8.3           0.50          10.20      48.0          crew       swell       south
 10         11          3    Chesil Waverider    15/04/2023 00:00    3.2             260.0      3.4           0.21           8.95      67.0          crew     windsea        west
-~~~
-{: .language-python}
-
-Or, we can select all rows that have a buoy_id of 3:
-
-~~~
-waves_df[waves_df.buoy_id == 3]
 ~~~
 {: .language-python}
 
@@ -694,7 +692,7 @@ Experiment with selecting various subsets of the "waves" data.
 >> {: .language-python}
 >>
 >> ~~~
->> 5
+>> 288
 >> ~~~
 >> {: .output}
 >>
