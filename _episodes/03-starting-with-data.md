@@ -544,12 +544,12 @@ is much larger than the wave heights classified as 'windsea'.
 > 2. What happens when you group by two columns using the following syntax and
 >    then calculate mean values?
 >   - `grouped_data2 = waves_df.groupby(['Seastate', 'Quadrant'])`
->   - `grouped_data2.mean()`
+>   - `grouped_data2.mean(numeric_only=True)`
 > 3. Summarize Temperature values for swell and windsea states in your data.
 >
 >> ## Solution
 >> 1. The most complete answer is `waves_df.groupby("Quadrant").count()["record_id"][["north", "west"]]` - note that we could use any column that has a value in every row - but given that `record_id` is our index for the dataset it makes sense to use that
->> 2. It groups by 2nd column _within_ the results of the 1st column, and then calculates the mean (n.b. depending on your version of python, you might need `grouped_data2.mean(numeric_only=True)`)
+>> 2. It groups by 2nd column _within_ the results of the 1st column, and then calculates the mean (n.b. older versions of python might need `grouped_data2.mean()` without the `numeric_only=True` parameter)
 >> 3.
 >>
 >> ~~~
