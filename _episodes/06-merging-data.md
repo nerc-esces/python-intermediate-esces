@@ -127,9 +127,9 @@ new_output = pd.read_csv('data/out.csv', keep_default_na=False, na_values=[""])
 >> # group by buoy_id, and output some summary statistics
 >> combined_data.groupby("buoy_id").describe()
 >> # write to csv
->> combined_data.to_csv("combined_wave_data.csv", index=False)
+>> combined_data.to_csv("data/combined_wave_data.csv", index=False)
 >> # read in the csv
->> cwd = pd.read_csv("combined_wave_data.csv", keep_default_na=False, na_values=[""])
+>> cwd = pd.read_csv("data/combined_wave_data.csv", keep_default_na=False, na_values=[""])
 >> # check the results are the same
 >> cwd.groupby("buoy_id").describe()
 >> ~~~
