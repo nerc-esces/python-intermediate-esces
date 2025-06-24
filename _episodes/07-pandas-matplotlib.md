@@ -35,8 +35,7 @@ use any data that is relevant to your research. The file
 [`bouldercreek_09_2013.txt`]({{ page.root }}/data/bouldercreek_09_2013.txt)
 contains stream discharge data, summarized at
 15 minute intervals (in cubic feet per second) for a streamgage on Boulder
-Creek at North 75th Street (USGS gage06730200) for 1-30 September 2013. If you'd
-like to use this dataset, please download it and put it in your data directory.
+Creek at North 75th Street (USGS gage06730200) for 1-30 September 2013. This dataset is already available on your data directory.
 
 ## Clean up your data and open it using Python and Pandas
 
@@ -258,7 +257,7 @@ p9_ax = my_plt_version.axes[0] # each subplot is an item in a list
 p9_ax.set_xlabel("Hindfoot length")
 p9_ax.tick_params(labelsize=16, pad=8)
 p9_ax.set_title('Scatter plot of weight versus hindfoot length', fontsize=15)
-plt.show() # not necessary in Jupyter Notebooks 
+plt.show() # not necessary in Jupyter Notebooks
 ~~~
 {: .language-python}
 
@@ -280,6 +279,14 @@ def fix_depth_string(i, depth):
 for i, depth in enumerate(buoys_df["Depth"]):
     fix_depth_string(i, depth)
 
+def fix_depth_string(i, depth):
+    if type(depth) == str:
+        buoys_df.loc[i, "Depth"] = float(depth.strip().rstrip("m"))
+
+for i, depth in enumerate(buoys_df["Depth"]):
+    fix_depth_string(i, depth)
+
+
 joined = pd.merge(left=waves_df, right=buoys_df, left_on='buoy_id', right_on='buoy_id')
 plt.bar(joined["Name_x"].unique(), joined["Depth"].unique())
 ~~~
@@ -300,7 +307,7 @@ plt.bar(depths_df["names"], depths_df["depths"])
 ~~~
 {: .language-python}
 
-Note that the return type of `.unique` is a Numpy ndarray, even though the column were of type Series! 
+Note that the return type of `.unique` is a Numpy ndarray, even though the column were of type Series!
 
 > ## Challenge - subsetting data before plotting
 > Plot Tpeak vs Wave Height from the West Hebrides site. Can you add appropriate labels and a title, and
@@ -349,10 +356,10 @@ Note that the return type of `.unique` is a Numpy ndarray, even though the colum
 > > fig, ax = plt.subplots()
 > > wh = waves[waves["buoy_id"] == 16]
 > > pb = waves[waves["buoy_id"] == 11]
-> > 
+> >
 > > ax.scatter(wh["Tpeak"], wh["Wave Height"])
 > > ax.scatter(pb["Tpeak"], pb["Wave Height"], marker="*")
-> > 
+> >
 > > ax.legend(["West Hebrides", "South Pembrokeshire"], loc="best")
 > > ~~~
 > > {: .language-python}

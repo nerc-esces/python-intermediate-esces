@@ -182,7 +182,7 @@ a = [1, 2, 3, 4, 5]
 >> 3. The error is raised because the list a has no element with index 5: it has only five entries, indexed from 0 to 4.
 >> 4. `a[len(a)]` also raises an IndexError. `len(a)` returns 5, making `a[len(a)]` equivalent to `a[5]`.
 >>     To retreive the final element of a list, use the index -1, e.g.
->> 
+>>
 >> ~~~
 >> a[-1]
 >> ~~~
@@ -423,7 +423,7 @@ It is worth noting that:
 
  _but_
 
--  indexing a data frame directly with labels will select columns (e.g. 
+-  indexing a data frame directly with labels will select columns (e.g.
 `waves_df[['buoy_id', 'Name', 'Temperature']]`), while ranges of integers will
 select rows (e.g. waves_df[0:13])
 
@@ -447,7 +447,7 @@ waves_df.iloc[1:10, 1]
 
 the error will also occur if index labels are used without `loc` (or column labels used
 with it).
-A useful rule of thumb is the following: 
+A useful rule of thumb is the following:
  - integer-based slicing of rows is best done with `iloc` and will avoid errors - it is generally consistent with indexing of Numpy
 arrays)
  - label-based slicing of rows is done with `loc`
@@ -487,7 +487,7 @@ arrays)
 >> [3 rows x 13 columns]
 >> ~~~
 >> {: .output}
->> 
+>>
 >>  `waves_df[0]` results in a ‘KeyError’, since direct indexing of a row is redundant this way - `iloc` should be used instead (`waves_df[0:1]` could be used to obtain only the first row using this notation)
 >>
 >>  `waves_df[:4]` slices from the first row to the fourth:
@@ -626,6 +626,7 @@ Experiment with selecting various subsets of the "waves" data.
 >   Use the `isin` function to find all plots that contain buoy ids 5 and 7
 >   in the "waves" DataFrame. How many records contain these values?
 >
+>
 > 3. Experiment with other queries. e.g. Create a query that finds all rows with a
 >   Tpeak greater than or equal to 10.
 >
@@ -635,7 +636,7 @@ Experiment with selecting various subsets of the "waves" data.
 >   the "waves" data.
 >
 >> ## Solution
->> 
+>>
 >> This is possible in one-line:
 >> ~~~
 >> waves_df[(pd.to_datetime(waves_df.Date, format="%d/%m/%Y %H:%M").dt.year == 2023) & (waves_df["Temperature"] <= 8)]
@@ -696,13 +697,13 @@ Experiment with selecting various subsets of the "waves" data.
 >> ~~~
 >> {: .output}
 >>
->> 
+>>
 >> ~~~
 >> waves_df[waves_df['Tpeak'] >= 10]
 >> ~~~
 >> {: .language-python}
 >>
->> 
+>>
 >> ~~~
 >> waves_df[~waves_df['Quadrant'].isin(['south','east'])]
 >> ~~~
@@ -721,7 +722,7 @@ Experiment with selecting various subsets of the "waves" data.
 >> 2070       2071       16                 west of Hebrides  18/10/2022 17:00  5.6  ...    34.0        crew     swell     north  2022
 >> 2071       2072       16                 west of Hebrides  18/10/2022 17:30  5.7  ...    31.0        crew     swell     north  2022
 >> 2072       2073       16                 west of Hebrides  18/10/2022 18:00  5.7  ...    34.0        crew     swell     north  2022
->> 
+>>
 >> [1985 rows x 14 columns]
 >> ~~~
 >> {: .output}

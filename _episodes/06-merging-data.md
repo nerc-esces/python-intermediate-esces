@@ -40,15 +40,15 @@ buoys_df = pd.read_csv("data/buoy_data.csv",
 Take note that the `read_csv` method we used can take some additional options which
 we didn't use previously. Many functions in Python have a set of options that
 can be set by the user if needed. In this case, we have told pandas to assign
-empty values in our CSV to NaN `keep_default_na=False, na_values=[""]`. 
+empty values in our CSV to NaN `keep_default_na=False, na_values=[""]`.
 We have explicitly requested to change empty values in the CSV to NaN,
-this is however also the default behaviour of `read_csv`. 
+this is however also the default behaviour of `read_csv`.
 [More about all of the `read_csv` options here and their defaults.](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv)
 
 # Concatenating DataFrames
 
 We can use the `concat` function in pandas to append either columns or rows from
-one DataFrame to another.  `waves2020_df` contains data from the year 2020, 
+one DataFrame to another.  `waves2020_df` contains data from the year 2020,
 and which is in the same format as our `waves_df` to see how this works.
 
 ~~~
@@ -120,8 +120,8 @@ new_output = pd.read_csv('data/out.csv', keep_default_na=False, na_values=[""])
 >> ## Solution
 >> ~~~
 >> # read the files
->> waves_df = pd.read_csv("waves.csv", keep_default_na=False, na_values=[""])
->> waves2020_df = pd.read_csv("waves_2020.csv", keep_default_na=False, na_values=[""])
+>> waves_df = pd.read_csv("data/waves.csv", keep_default_na=False, na_values=[""])
+>> waves2020_df = pd.read_csv("data/waves_2020.csv", keep_default_na=False, na_values=[""])
 >> # concatenate
 >> combined_data = pd.concat([waves_df, waves2020_df], axis=0)
 >> # group by buoy_id, and output some summary statistics
@@ -151,8 +151,8 @@ NOTE: This process of joining tables is similar to what we do with tables in an
 SQL database.
 
 For example, the `buoys_data.csv` file that we've been working with could be considered as a "lookup"
-table. This table contains the data for 15 buoys. This new table details 
-where the buoy is (Country, Site Type, latitude and longitude), as well as water 
+table. This table contains the data for 15 buoys. This new table details
+where the buoy is (Country, Site Type, latitude and longitude), as well as water
 depth and information about the observing platform (Manufacturer,	Type, operator)
 The Name and buoy_id code are unique for each line. These buoys are identified in our waves
 data as well using the buoy_id (and more memorable 'Name'). Rather than adding 8 more
@@ -163,7 +163,7 @@ of information to the waves data.
 
 Storing data in this way has many benefits including:
 
-1. It ensures consistency in the spelling of buoy attributes (site name, manufacturer etc.) 
+1. It ensures consistency in the spelling of buoy attributes (site name, manufacturer etc.)
    given each buoy is only entered once. Imagine the possibilities
    for spelling errors when copying the data thousands of times!
 2. It also makes it easy for us to make changes or add information about the buoys once
@@ -210,7 +210,7 @@ Index(['record_id', 'buoy_id', 'Name', 'Date', 'Tz', 'Peak Direction', 'Tpeak',
        'Wave Height', 'Temperature', 'Spread', 'Operations', 'Seastate',
        'Quadrant'],
       dtype='object')
-      
+
 ~~~
 {: .language-python}
 
@@ -259,7 +259,7 @@ both the `wave_sub` and `buoys_df` DataFrames. In other words, if a row in
 column of `buoys_data`, it will not be included in the DataFrame returned by an
 inner join.  Similarly, if a row in `buoys_df` has a value of `buoy_id`
 that does *not* appear in the `buoy_id` column of `wave_sub`, that row will not
-be included in the DataFrame returned by an inner join. In our example, there is 
+be included in the DataFrame returned by an inner join. In our example, there is
 data from the `M6 Buoy`, but this buoy (id 10) does not exist in our buoy data.
 
 The two DataFrames that we want to join are passed to the `merge` function using
@@ -271,7 +271,7 @@ DataFrame). For inner joins, the order of the `left` and `right` arguments does
 not matter.
 
 The result `merged_inner` DataFrame contains all of the columns from `wave_sub`
-(record id, Tz, Peak Direction, Tpeak, etc.) as well as all the columns from 
+(record id, Tz, Peak Direction, Tpeak, etc.) as well as all the columns from
 `buoys_df` (buoy_id, Name, Manufacturer, Depth, Type, operator, Country, Site,
 Type,	latitude, and longitude).
 
@@ -321,8 +321,8 @@ merged_left[ pd.isnull(merged_left.Name_y) ]
 
 These rows are the ones where the value of `buoy_id` from `wave_sub` (in this
 case, `M6 Buoy`) does not occur in `buoys_df`. Also note that where the two
-DataFrames have columns with the same name, Pandas appends `_x` to the column 
-from the "left" dataframe, and `_y` to the column from the "right" dataframe. 
+DataFrames have columns with the same name, Pandas appends `_x` to the column
+from the "left" dataframe, and `_y` to the column from the "right" dataframe.
 
 
 ## Other join types
@@ -345,10 +345,13 @@ The pandas `merge` function supports two other join types:
 > `buoys_data.csv` tables. Then calculate the mean:
 >
 > 1. Wave Height by Site Type
-> 2. Temperature by Seastate and by Country 
+> 2. Temperature by Seastate and by Country
 >
 >> ## Solution
 >> ~~~
+>> # read the files
+>> waves_df = pd.read_csv("data/waves.csv")
+>> waves2020_df = pd.read_csv("data/waves_2020.csv")
 >> # Merging the data frames
 >> merged_left = pd.merge(left=waves_df,right=buoys_df, how='left', on="buoy_id")
 >> # Group by Site Type, and calculate mean of Wave Height
@@ -368,7 +371,7 @@ The pandas `merge` function supports two other join types:
 >> {: .output}
 >>
 >> ~~~
->> Seastate  Country 
+>> Seastate  Country
 >> swell     England     17.324093
 >>           Scotland    10.935880
 >>           Wales       12.491667
@@ -380,13 +383,13 @@ The pandas `merge` function supports two other join types:
 >> {: .output}
 > {: .solution}
 {: .challenge}
- 
+
 > ## Challenge - filter by availability
 >
 > 1. In the data folder, there is a `access.csv` file that contains information about the
 >    data availability and access rights associated with each buoy. Use that data to summarize the number of
 >    observations which are reusable for research.
-> 2. Again using `access.csv` file, use that data to summarize the number of data records from operational 
+> 2. Again using `access.csv` file, use that data to summarize the number of data records from operational
 >     buoys which are available in Coastal versus Ocean waters.
 >
 >> ## Solution
@@ -395,7 +398,7 @@ The pandas `merge` function supports two other join types:
 >> # Read the access file
 >> access_df = pd.read_csv("data/access.csv")
 >> # Merge the dataframes
->> merged_access = pd.merge(left=waves_df,right=access, how='left', on="buoy_id")
+>> merged_access = pd.merge(left=waves_df,right=access_df, how='left', on="buoy_id")
 >> # find the number available for research
 >> merged_access.groupby("data availability").count()
 >> # or, this also gives the same answer:
@@ -405,7 +408,7 @@ The pandas `merge` function supports two other join types:
 >>
 >> 2.
 >> ~~~
->> buoy_access = pd.merge(left=buoys_df, right=access, how="left", on="buoy_id")
+>> buoy_access = pd.merge(left=buoys_df, right=access_df, how="left", on="buoy_id")
 >> buoy_access[buoy_access["data availability"]=="operational"].groupby("Site Type")["buoy_id"].count()
 >> ~~~
 >> {: .language-python}
