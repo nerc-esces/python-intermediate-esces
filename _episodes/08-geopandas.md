@@ -252,7 +252,7 @@ We can even display the Cairngorms data directly over the Scotland plot, which v
 
 ~~~
 scotland_plot = scotland.explore()
-cairngorms.explore(map=scotland_plot, style_kwds={"fillColor":"lime"})
+cairngorms.explore(m=scotland_plot, style_kwds={"fillColor":"lime"})
 ~~~
 {: .language-python}
 
