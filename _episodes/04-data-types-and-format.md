@@ -321,7 +321,7 @@ This is a convenient place to highlight that the `apply` method is one way to ru
 the Buoy Station Names, we can write:
 
 ~~~
-waves_df["Names"].apply(len)
+waves_df["Name"].apply(len)
 ~~~
 {: .language-python}
 
