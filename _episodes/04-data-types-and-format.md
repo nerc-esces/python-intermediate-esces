@@ -405,7 +405,7 @@ pandas._libs.tslibs.timedeltas.Timedelta
 > > ## Solution
 > > ~~~
 > > rounded_heights = waves_df["Wave Height"].apply(round)
-> > waves_df["Wave Height"].apply(round, args=(1,))
+> > waves_df["Wave Height"].apply(round, args=(2,))
 > > ~~~
 > > {: .language-python}
 > {: .solution}
