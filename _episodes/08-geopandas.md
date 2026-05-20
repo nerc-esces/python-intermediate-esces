@@ -7,18 +7,18 @@ questions:
     - "How can I visualise and analyse this data?"
 objectives:
     - "Import the Geopandas module to analyse latitude / longitude data."
-    - "Use Geopandas and Geoplot to help with visualisation."
+    - "Use Geopandas to help with visualisation."
 keypoints:
     - "Geopandas is the key module to help deal with geospatial data."
-    - "Using Geopandas and Geoplot we can create publication / web-ready maps."
+    - "Using Geopandas we can create publication / web-ready maps."
 ---
 
 
 ## Geospatial Data
 
-Often in the Environmental Sciences, we need to deal with geospatial data. 
+Often in the Environmental Sciences, we need to deal with geospatial data.
 This is normally presented as latitude and longitude (either as decimal degrees or
-as degrees/minutes/seconds), but can be presented in other formats (e.g. OSGB for UK 
+as degrees/minutes/seconds), but can be presented in other formats (e.g. OSGB for UK
 Grid References).
 
 A full discussion of geospatial vector data is beyond the scope of this
@@ -48,7 +48,6 @@ we need directly within a Notebook:
 
 ~~~
 conda install geopandas -c conda-forge
-conda install geoplot -c conda-forge
 ~~~
 {: .language-python}
 
@@ -56,17 +55,16 @@ These might take several minutes to run. Once they've been installed, we can imp
 
 ~~~
 import geopandas as gpd
-import geoplot as gplt
 ~~~
 {: .language-python}
 
 > ## Conda environments
-> We're now at the stage where you might find it useful to have different python _environments_ for specific 
+> We're now at the stage where you might find it useful to have different python _environments_ for specific
 > tasks. When you open Anaconda Navigator, it will, by default, be running in your `base` environment.
 > However, you can create new environments via the Environments tab in the left-hand menu. Each environment
-> can have different packages (or different versions of packages), different versions of python, etc - and 
+> can have different packages (or different versions of packages), different versions of python, etc - and
 > different packages can be installed via the Environments tab. However, note that individual Notebooks are _not_
-> associated with specific environments - they are associated with the current _active_ environment. A full 
+> associated with specific environments - they are associated with the current _active_ environment. A full
 > introduction to Conda environments can be found at [https://carpentries-incubator.github.io/introduction-to-conda-for-data-scientists/](https://carpentries-incubator.github.io/introduction-to-conda-for-data-scientists/)
 {: .callout}
 
@@ -95,7 +93,7 @@ buoys_geo = gpd.GeoDataFrame(
 {: .language-python}
 
 The value we've given to the `crs` argument specifies that the data is latitude and longitude, rather
-than any other coordinate system. We can now see that the `buoys_geo` DataFrame contains a new column, `geometry`, 
+than any other coordinate system. We can now see that the `buoys_geo` DataFrame contains a new column, `geometry`,
 which also has type `geometry`.
 
 So, what can we do with this data type?
@@ -140,7 +138,7 @@ scotland.plot()
 ~~~
 {: .language-python}
 
-We can see it looks like Scotland! We can look at the `shape` of the DataFrame to see that it has 32 rows - this is the number of Local Authorities in Scotland, and 5 columns. 
+We can see it looks like Scotland! We can look at the `shape` of the DataFrame to see that it has 32 rows - this is the number of Local Authorities in Scotland, and 5 columns.
 
 We can find the "centroid" point of each Polygon - we can even plot this if we want an abstract map of Scotland!
 
@@ -163,7 +161,7 @@ National Parks in Scotland, and we can plot it
 
 ~~~
 # Notice this is a different file format to the geojson file we used for the Scottish Council Boundaries data
-# This is one file which makes up the Shapefile data format. At a minimum, there needs to be corresponding `shx` and `dbf` files (with the same filenames) in the same directory, but `prj`, `sbx`, `sbn`, and `shp.xml` can store additional metadata 
+# This is one file which makes up the Shapefile data format. At a minimum, there needs to be corresponding `shx` and `dbf` files (with the same filenames) in the same directory, but `prj`, `sbx`, `sbn`, and `shp.xml` can store additional metadata
 cairngorms =  gpd.read_file("data/cairngorms_boundary.shp")
 cairngorms.plot()
 ~~~
@@ -196,7 +194,7 @@ scotland.overlaps(cairngorms.iloc[0].geometry)
 > ## Challenge: overlaps
 > 1. Subset the Scotland dataset to show only the rows which overlap with the Cairngorms. Can you display only the names?
 > 2. Look in the Geopandas documentation (https://geopandas.org/en/stable/index.html) for
->    the `disjoint` method. What do you think it will return when you run it in the way that we 
+>    the `disjoint` method. What do you think it will return when you run it in the way that we
 >    ran `overlap`? Try it - did you get the expected result? Can you plot this?
 >
 >> ## Solution
@@ -204,8 +202,10 @@ scotland.overlaps(cairngorms.iloc[0].geometry)
 >> overlaps = scotland.overlaps(cairngorms.iloc[0].geometry)
 >> # get a Series of only the overlaps
 >> overlaps = overlaps.where(overlaps == True).dropna().index
->> OR, more concisely
->> overlaps = overlaps.index[overlaps]
+>>
+>> # OR, more concisely
+>> # overlaps = overlaps.index[overlaps]
+>>
 >> # use this to subset the Scotland dataframe
 >> scotland.loc[overlaps]
 >> # ...and get the names
@@ -252,27 +252,39 @@ We can even display the Cairngorms data directly over the Scotland plot, which v
 
 ~~~
 scotland_plot = scotland.explore()
-cairngorms.explore(map=scotland_plot, style_kwds={"fillColor":"lime"})
+cairngorms.explore(m=scotland_plot, style_kwds={"fillColor":"lime"})
 ~~~
 {: .language-python}
 
-## Back to our buoy data 
+## Back to our buoy data
 
-Our buoy data is based around the UK. Geopandas includes some very low resolution maps which we can use to plot our geospatial data on
+Our buoy data is based around the UK. We can use Cartopy low resolution maps which we can use to plot our geospatial data on
 
 ~~~
-world = gpd.read_file(gpd.datasets.get_path("naturalearth_lowres"))
-ax = world.clip([-15, 50, 9, 61]).plot(color="white", edgecolor="black")
-buoys_geo.plot(ax=ax, color="blue")
+# Import matplotlib and cartopy
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+
+# Create the figure and axis with a PlateCarree projection
+fig, ax = plt.subplots(figsize=(10, 6), subplot_kw={'projection': ccrs.PlateCarree()})
+
+# Add features to the map
+ax.add_feature(cfeature.LAND)
+ax.add_feature(cfeature.OCEAN)
+ax.add_feature(cfeature.BORDERS, linestyle=':')
+ax.coastlines()
+ax.set_extent([-15, 9, 50, 61], crs=ccrs.PlateCarree())
+
+# Plot buoys points — the `.plot()` method can take an `ax` with projection
+buoys_geo.plot(ax=ax, color='blue')
 ~~~
 {: .language-python}
 
-We use the `clip()` function to limit the bounds of the map to the most useful area for our needs.
+We use cartopy to create a map with a PlateCarree projection, which is suitable for plotting latitude and longitude data.
 
 What about if we want a higher quality map? There are several ways of achieving this. We've already seen
-that the `explore()` function gives us a way of generating an interactive map, but we can also use the Geoplot package,
-or Geopandas directly, to create maps. We'll just use Geopandas, but Geoplot can give some more fine-grained control if you
-require it.
+that the `explore()` function gives us a way of generating an interactive map, but we can also use the Geopandas directly, to create maps.
 
 First, we need to import a basemap to plot buoy points onto.
 
@@ -287,7 +299,7 @@ north_atlantic = gpd.read_file("data/north_atlantic.geojson")
 > European data is the EU ([https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts#nuts21](https://ec.europa.eu/eurostat/web/gisco/geodata/reference-data/administrative-units-statistical-units/nuts#nuts21)),
 > while the Cairngorms data we looked at earlier came from the UK Government geospatial data catalogue
 > ([https://www.data.gov.uk/dataset/8a00dbd7-e8f2-40e0-bcba-da2067d1e386/cairngorms-national-park-designated-boundary](https://www.data.gov.uk/dataset/8a00dbd7-e8f2-40e0-bcba-da2067d1e386/cairngorms-national-park-designated-boundary)), and the
-> Scottish data came from the Scottish Government ([https://data.spatialhub.scot/dataset/local_authority_boundaries-is/resource/d24c5735-0f1c-4819-a6bd-dbfeb93bd8e4](https://data.spatialhub.scot/dataset/local_authority_boundaries-is/resource/d24c5735-0f1c-4819-a6bd-dbfeb93bd8e4)) 
+> Scottish data came from the Scottish Government ([https://data.spatialhub.scot/dataset/local_authority_boundaries-is/resource/d24c5735-0f1c-4819-a6bd-dbfeb93bd8e4](https://data.spatialhub.scot/dataset/local_authority_boundaries-is/resource/d24c5735-0f1c-4819-a6bd-dbfeb93bd8e4))
 {: .callout}
 
 We can then plot the location of the buoys, and save the figure as we saw earlier. Although we could use the same technique as in the previous example (where we set the map as the axis and plotted the buoy positions on this object), here we're showing we can also use Matplotlib subplots. This will allow us more control over the subsequent plot. However, subplots aren't suppoorted directly via Pandas or Geopandas, so we now need to import Matplotlib
@@ -309,17 +321,17 @@ plt.savefig("b.png")
 >>
 >> ~~~
 >> import matplotlib.pyplot as plt
->> 
+>>
 >> fig, ax = plt.subplots()
 >> north_atlantic.plot(ax=ax)
 >> buoys_geo.plot(ax=ax, color="red")
->> 
+>>
 >> for buoy in buoys_geo.iterfeatures():
 >>     ax.annotate(buoy["properties"]["Name"], xy=(buoy["properties"]["longitude"], buoy["properties"]["latitude"]))
 >> ~~~
 >> {: .language-python}
 >>
->> The text is a little cramped! The next challenge will help fix this 
+>> The text is a little cramped! The next challenge will help fix this
 > {: .solution}
 {: .challenge}
 
@@ -330,15 +342,15 @@ plt.savefig("b.png")
 > - if you have time, investigate how you might customise the plot
 >
 >> ## Solution
->> 
+>>
 >> ~~~
->> # the overlap function won't work, because it works on a 1-to-1 row-wise basis, whereas we 
->> want to find all the points which overlap with any of the areas
+>> # the overlap function won't work, because it works on a 1-to-1 row-wise basis, whereas we
+>> # want to find all the points which overlap with any of the areas
 >> buoy_areas = north_atlantic.geometry.apply(lambda x: buoys_geo.within(x).any())
 >> north_atlantic[buoy_areas]
 >>
 >> # We can see that one of the areas is the "North Atlantic Ocean" - so this won't help fix the extent of the map!
->> # We can use a different way to set the bounds 
+>> # We can use a different way to set the bounds
 >>
 >> bounds = buoys_geo.total_bounds # The output of total_bounds is an array of minx,miny,maxx,maxy
 >>
@@ -346,9 +358,9 @@ plt.savefig("b.png")
 >> ax.set_ylim([bounds[1]-0.5,bounds[3]+0.5])
 >> ax.set_xlim([bounds[0]-0.5,bounds[2]+0.5])
 >> north_atlantic.plot(ax=ax)
->> 
+>>
 >> buoys_geo.plot(ax=ax, color="red")
->> 
+>>
 >> for buoy in buoys_geo.iterfeatures():
 >>     ax.annotate(buoy["properties"]["Name"], xy=(buoy["properties"]["longitude"], buoy["properties"]["latitude"]))
 >> ~~~
@@ -370,10 +382,10 @@ plt.savefig("b.png")
 >> buoys_geo.plot(ax=ax, color="red")
 >>
 >> axis_labels = []
->> 
+>>
 >> for buoy in buoys_geo.iterfeatures():
 >>     ax.annotate(int(buoy["id"])+1, xy=(buoy["properties"]["longitude"], buoy["properties"]["latitude"]))
->>    axis_labels.append(f"{int(buoy['id'])+1}: {buoy['properties']['Name']}")
+>>     axis_labels.append(f"{int(buoy['id'])+1}: {buoy['properties']['Name']}")
 >>
 >> labels = AnchoredText("\n".join(axis_labels),
                        loc='lower left', prop=dict(size=8), frameon=True,
@@ -381,7 +393,7 @@ plt.savefig("b.png")
                        bbox_transform=ax.transAxes
                        )
 >> labels.patch.set_boxstyle("round,pad=0.,rounding_size=0.2")
->> ax.add_artist(labels) 
+>> ax.add_artist(labels)
 >> fig.tight_layout()
 >> ~~~
 >> {: .language-python}

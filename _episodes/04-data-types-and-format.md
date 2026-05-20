@@ -374,7 +374,7 @@ dates.apply(datetime.datetime.strftime, args=("%a",))
 {: .language-python}
 
 >## Watch out for tuples!
-> _Tuples_ are data structure similar to a list, but are _immutable_. They are created using parentheses, with items separated by commas: 
+> _Tuples_ are a data structure similar to a list, but are _immutable_. They are created using parentheses, with items separated by commas: 
 > `my_tuple = (1, 2, 3)`
 > However, putting parentheses around a single object does not make it a tuple! Creating a tuple of length 1 still needs a trailing comma.
 > Test these: `type(("a"))` and `type(("a",))`.

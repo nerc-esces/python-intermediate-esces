@@ -47,13 +47,13 @@ directory structure, however, that is not our focus today.
 
 We are studying ocean waves and temperature in the seas around the UK.
 
-For this lesson we will be using a subset of data from Centre for Environment Fisheries and Aquaculture Science (Cefas). 
-WaveNet, Cefas’ strategic wave monitoring network for the United Kingdom, provides a single source of real-time wave data from a network of wave buoys located in areas at risk from flooding. https://wavenet.cefas.co.uk/ 
+For this lesson we will be using a subset of data from Centre for Environment Fisheries and Aquaculture Science (Cefas).
+WaveNet, Cefas’ strategic wave monitoring network for the United Kingdom, provides a single source of real-time wave data from a network of wave buoys located in areas at risk from flooding. For more information, see the [Cefas WaveNet website](https://wavenet.cefas.co.uk/).
 
 If we look out to sea, we notice that waves on the sea surface are not simple sinusoids. The surface appears to be composed of random waves of various lengths and periods. How can we describe this complex surface?
- 
+
 By making some simplifications and assumptions, we fit an idealised 'spectrum' to describe all the energy held in different wave frequencies. This describes the wave energy at a point, covering the energy in small ripples (high frequency) to long period (low frequency) swell waves. This figure shows an example idealised spectrum, with the highest energy around wave periods of 11 seconds.
- 
+
 ![An idealised wave spectra for a wave period of 11 seconds](../fig/wave_spectra.png)
 
 We can go a step further, and also associate a wave direction with the amount of energy. These simplifications lead to a 2D wave spectrum at any point in the sea, with dimensions frequency and direction. Directional spreading is a measure of how wave energy for a given sea state is spread as a function of direction of propagation. For example the wave data on the left have a small directional spread, as the waves travel, this can fan out over a wider range of directions.
@@ -62,8 +62,8 @@ We can go a step further, and also associate a wave direction with the amount of
 
 When it is very windy or storms pass-over large sea areas, surface waves grow from short choppy wind-sea waves into powerful swell waves. The height and energy of the waves is larger in winter time, when there are more storms. wind-sea waves have short wavelengths / wave periods (like ripples) while swell waves have longer periods (at a lower frequency).
 
-The example file contains a obervations of sea temperatures, and waves properties at different buoys around the UK. 
- 
+The example file contains a obervations of sea temperatures, and waves properties at different buoys around the UK.
+
 The dataset is stored as a `.csv` file: each row holds information for a
 single wave buoy, and the columns represent:
 
@@ -98,7 +98,7 @@ record_id,buoy_id,Name,Date,Tz,Peak Direction,Tpeak,Wave,Height,Temperature,Spre
 ~~~
 {: .output}
 
----   
+---
 
 ## About Libraries
 A library in Python contains a set of tools (called functions) that perform
@@ -312,7 +312,7 @@ Let's look at the data using these.
 >
 > > ## Solution
 > >
-> > 1. 
+> > 1.
 > >
 > > ~~~
 > > Index(['record_id', 'buoy_id', 'Name', 'Date', 'Tz', 'Peak Direction', 'Tpeak',
@@ -347,7 +347,7 @@ Let's look at the data using these.
 > > So, `waves_df.head()` returns the first 5 rows of the `waves_df` dataframe. (Your Jupyter Notebook might show all columns). `waves_df.head(15)` returns the first 15 rows; i.e. the _default_ value (recall the functions lesson) is 5, but we can change this via an argument to the function
 > >
 > > 4.
-> > 
+> >
 > > ~~~
 > >       record_id  buoy_id              Name  ... Operations  Seastate  Quadrant
 > > 2068       2069       16  west of Hebrides  ...       crew     swell     north
@@ -359,7 +359,7 @@ Let's look at the data using these.
 > > [5 rows x 13 columns]
 > > ~~~
 > > {: .output}
-> > 
+> >
 > > So, `waves_df.tail()` returns the final 5 rows of the dataframe. We can also control the output by adding an argument, like with `head()`
 > {: .solution}
 {: .challenge}
@@ -417,9 +417,9 @@ array(['SW Isles of Scilly WaveNet Site', 'Hayling Island Waverider',
 >
 > 2. What is the difference between using `len(buoy_ids)` and `waves_df['buoy_id'].nunique()`?
 >    in this case, the result is the same but when might be the difference be important?
-> 
+>
 > > ## Solution
-> > 
+> >
 > > 1.
 > >
 > > ~~~
@@ -432,9 +432,9 @@ array(['SW Isles of Scilly WaveNet Site', 'Hayling Island Waverider',
 > > [14  7  5  3 10  9  2 11  6 16]
 > > ~~~
 > > {: .output}
-> > 
+> >
 > > 2.
-> > 
+> >
 > > We could count the number of elements of the list, or we might think about using either the `len()` or `nunique()` functions, and we get 10.
 > >
 > > We can see the difference between `len()` and `nunique()` if we create a DataFrame with a `None` value:
@@ -445,7 +445,7 @@ array(['SW Isles of Scilly WaveNet Site', 'Hayling Island Waverider',
 > > print(length_test.nunique())
 > > ~~~
 > > {: .language-python}
-> > 
+> >
 > > We can see that `len()` returns 4, while `nunique()` returns 3 - this is because `nunique()` ignore any `Null` value
 > {: .solution}
 {: .challenge}
@@ -484,7 +484,7 @@ Name: Temperature, dtype: float64
 > statistical methods in Pandas ignore NaN ("not a number") values. We can count the total number of
 > of NaNs using `waves_df["Temperature"].isna().sum()`, which returns 876. 876 + 1197 is 2073, which _is_
 > the total number of rows in the DataFrame
-{: .callout} 
+{: .callout}
 
 We can also extract one specific metric if we wish:
 
@@ -535,7 +535,7 @@ windsea,326.0,1128.500000,188.099299,3.0,1036.25,1121.5,1273.5,1355.0,326.0,7.07
 The `groupby` command is powerful in that it allows us to quickly generate
 summary stats.
 
-This example shows that the wave height associated with water described as 'swell' 
+This example shows that the wave height associated with water described as 'swell'
 is much larger than the wave heights classified as 'windsea'.
 
 > ## Challenge - Summary Data
@@ -544,14 +544,14 @@ is much larger than the wave heights classified as 'windsea'.
 > 2. What happens when you group by two columns using the following syntax and
 >    then calculate mean values?
 >   - `grouped_data2 = waves_df.groupby(['Seastate', 'Quadrant'])`
->   - `grouped_data2.mean()`
-> 3. Summarize Temperature values for swell and windsea states in your data. 
+>   - `grouped_data2.mean(numeric_only=True)`
+> 3. Summarize Temperature values for swell and windsea states in your data.
 >
 >> ## Solution
->> 1. The most complete answer is `waves_df.groupby("Quadrant").count()["record_id"][["north", "west"]]` - note that we could use any column that has a value in every row - but given that `record_id` is our index for the dataset it makes sense to use that 
->> 2. It groups by 2nd column _within_ the results of the 1st column, and then calculates the mean (n.b. depending on your version of python, you might need `grouped_data2.mean(numeric_only=True)`)
->> 3.  
->> 
+>> 1. The most complete answer is `waves_df.groupby("Quadrant").count()["record_id"][["north", "west"]]` - note that we could use any column that has a value in every row - but given that `record_id` is our index for the dataset it makes sense to use that
+>> 2. It groups by 2nd column _within_ the results of the 1st column, and then calculates the mean (n.b. older versions of python might need `grouped_data2.mean()` without the `numeric_only=True` parameter)
+>> 3.
+>>
 >> ~~~
 >> waves_df.groupby(['Seastate'])["Temperature"].describe()
 >> ~~~
@@ -561,7 +561,7 @@ is much larger than the wave heights classified as 'windsea'.
 >>
 >> ~~~
 >>             count    mean         std         min     25%      50%      75%        max
->> Seastate                                
+>> Seastate
 >>    swell    871.0    14.703502    3.626322    5.15    12.75    17.10    17.4000    18.70
 >>  windsea    326.0    7.981902     3.518419    5.15     5.40     5.45    12.4875    13.35
 >> ~~~
@@ -602,11 +602,11 @@ waves_df.groupby('Name')['record_id'].count()['SW Isles of Scilly WaveNet Site']
 ## Basic Maths Functions
 
 If we wanted to, we could perform math on an entire column of our data. For
-example let's convert all the degrees values to radians. 
+example let's convert all the degrees values to radians.
 
 ~~~
 # convert the directions from degrees to radians
-# Sometimes people use different units for directions, for example we could describe 
+# Sometimes people use different units for directions, for example we could describe
 # the directions in terms of radians (where a full circle 360 degrees = 2*pi radians)
 # To do this we need to use the math library which contains the constant pi
 
@@ -618,7 +618,7 @@ waves_df['Peak Direction'] * math.pi / 180
 
 > ## Constants
 >
-> It is normal for code to include variables that have values that should not change, for example. 
+> It is normal for code to include variables that have values that should not change, for example.
 > the mathematical value of _pi_. These are called constants. The maths library contains [three
 > numerical constants](https://docs.python.org/3/library/math.html#constants): _pi_, _e_, and _tau_, but
 > other built-in modules also contain constants. The `os` library (which provides a portable way of using
@@ -644,7 +644,7 @@ waves_df['Peak Direction'] * math.pi / 180
 
 > ## Challenge - normalising values
 >
-> Sometimes, we need to _normalise_ values. A common way of doing this is to scale values between 0 and 1, using 
+> Sometimes, we need to _normalise_ values. A common way of doing this is to scale values between 0 and 1, using
 > `y = (x - min) / (max - min)`. Using this equation, scale the Temperature column
 >
 >> ## Solution
@@ -673,4 +673,3 @@ calculated from our data.
 [spreadsheet-lesson5]: http://www.datacarpentry.org/spreadsheet-ecology-lesson/05-exporting-data
 
 {% include links.md %}
-

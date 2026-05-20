@@ -35,8 +35,7 @@ use any data that is relevant to your research. The file
 [`bouldercreek_09_2013.txt`]({{ page.root }}/data/bouldercreek_09_2013.txt)
 contains stream discharge data, summarized at
 15 minute intervals (in cubic feet per second) for a streamgage on Boulder
-Creek at North 75th Street (USGS gage06730200) for 1-30 September 2013. If you'd
-like to use this dataset, please download it and put it in your data directory.
+Creek at North 75th Street (USGS gage06730200) for 1-30 September 2013. This dataset is already available on your data directory.
 
 ## Clean up your data and open it using Python and Pandas
 
@@ -109,8 +108,8 @@ import matplotlib.pyplot as plt
 Now, let's read data and plot it!
 
 ~~~
-waves = pd.read_csv("data/waves.csv")
-my_plot = waves.plot("Tpeak", "Wave Height", kind="scatter")
+waves_df = pd.read_csv("data/waves.csv")
+my_plot = waves_df.plot("Tpeak", "Wave Height", kind="scatter")
 plt.show() # not necessary in Jupyter Notebooks
 ~~~
 {: .language-python}
@@ -230,7 +229,7 @@ provide, offering a consistent environment to make publication-quality visualiza
 ~~~
 fig, ax1 = plt.subplots() # prepare a matplotlib figure
 
-waves.plot("Tpeak", "Wave Height", kind="scatter", ax=ax1)
+waves_df.plot("Tpeak", "Wave Height", kind="scatter", ax=ax1)
 
 # Provide further adaptations with matplotlib:
 ax1.set_xlabel("Tpeak (highest energy wave periodicity; seconds)")
@@ -258,7 +257,7 @@ p9_ax = my_plt_version.axes[0] # each subplot is an item in a list
 p9_ax.set_xlabel("Hindfoot length")
 p9_ax.tick_params(labelsize=16, pad=8)
 p9_ax.set_title('Scatter plot of weight versus hindfoot length', fontsize=15)
-plt.show() # not necessary in Jupyter Notebooks 
+plt.show() # not necessary in Jupyter Notebooks
 ~~~
 {: .language-python}
 
@@ -272,6 +271,10 @@ plt.show() # not necessary in Jupyter Notebooks
 What about plotting after joining DataFrames? Let's plot the water depths at each of the buoys
 
 ~~~
+# reload the buoys data just in case we don't have it loaded still
+buoys_df = pd.read_csv("data/buoy_data.csv")
+
+
 # water depth in the buoys dataframe is currently a string (it's suffixed by "m") so we need to fix that
 def fix_depth_string(i, depth):
     if type(depth) == str:
@@ -279,6 +282,14 @@ def fix_depth_string(i, depth):
 
 for i, depth in enumerate(buoys_df["Depth"]):
     fix_depth_string(i, depth)
+
+def fix_depth_string(i, depth):
+    if type(depth) == str:
+        buoys_df.loc[i, "Depth"] = float(depth.strip().rstrip("m"))
+
+for i, depth in enumerate(buoys_df["Depth"]):
+    fix_depth_string(i, depth)
+
 
 joined = pd.merge(left=waves_df, right=buoys_df, left_on='buoy_id', right_on='buoy_id')
 plt.bar(joined["Name_x"].unique(), joined["Depth"].unique())
@@ -300,7 +311,7 @@ plt.bar(depths_df["names"], depths_df["depths"])
 ~~~
 {: .language-python}
 
-Note that the return type of `.unique` is a Numpy ndarray, even though the column were of type Series! 
+Note that the return type of `.unique` is a Numpy ndarray, even though the column were of type Series!
 
 > ## Challenge - subsetting data before plotting
 > Plot Tpeak vs Wave Height from the West Hebrides site. Can you add appropriate labels and a title, and
@@ -310,11 +321,11 @@ Note that the return type of `.unique` is a Numpy ndarray, even though the colum
 > >
 > > ~~~
 > > fig, ax1 = plt.subplots()
-> > waves[waves["buoy_id"] == 16].plot("Tpeak", "Wave Height", kind="scatter", ax=ax1)
+> > waves_df[waves_df["buoy_id"] == 16].plot("Tpeak", "Wave Height", kind="scatter", ax=ax1)
 > > ax1.set_xlabel("Highest energy wave period")
 > > ax1.tick_params(labelsize=16, pad=8)
-> > ax1.set_xbound(0, waves[waves["buoy_id"] == 16].Tpeak.max()+1)
-> > ax1.set_ybound(0, waves[waves["buoy_id"] == 16]["Wave Height"].max()+1)
+> > ax1.set_xbound(0, waves_df[waves_df["buoy_id"] == 16].Tpeak.max()+1)
+> > ax1.set_ybound(0, waves_df[waves_df["buoy_id"] == 16]["Wave Height"].max()+1)
 > > fig.suptitle('Scatter plot of wave height versus Tpeak for West Hebrides', fontsize=15)
 > > ~~~
 > > {: .language-python}
@@ -328,7 +339,7 @@ Note that the return type of `.unique` is a Numpy ndarray, even though the colum
 > > ## Answers
 > >
 > > ~~~
-> > data = waves.groupby("buoy_id").max("Wave Height")
+> > data = waves_df.groupby("buoy_id").max("Wave Height")
 > > x = data["Temperature"]
 > > y = data["Wave Height"]
 > > fig, plot = plt.subplots() # although we're not using the `fig` variable, subplots returns 2 objects
@@ -347,12 +358,12 @@ Note that the return type of `.unique` is a Numpy ndarray, even though the colum
 > >
 > > ~~~
 > > fig, ax = plt.subplots()
-> > wh = waves[waves["buoy_id"] == 16]
-> > pb = waves[waves["buoy_id"] == 11]
-> > 
+> > wh = waves_df[waves_df["buoy_id"] == 16]
+> > pb = waves_df[waves_df["buoy_id"] == 11]
+> >
 > > ax.scatter(wh["Tpeak"], wh["Wave Height"])
 > > ax.scatter(pb["Tpeak"], pb["Wave Height"], marker="*")
-> > 
+> >
 > > ax.legend(["West Hebrides", "South Pembrokeshire"], loc="best")
 > > ~~~
 > > {: .language-python}
